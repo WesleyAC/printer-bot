@@ -2,7 +2,7 @@ curl --header "Content-Type: application/json" \
   --request POST \
   --data '{
     "bot_email": "printer-bot@wesleyac.com",
-    "data": "@**Printer Bot** http://hack.wesleyac.com/foo.txt http://www.orimi.com/pdf-test.pdf!",
+    "data": "@**Printer Bot** https://raw.githubusercontent.com/WesleyAC/printer-bot/master/printer-bot.py!",
     "message": {
         "client": "website",
         "content": "@**Printer Bot** test message!",

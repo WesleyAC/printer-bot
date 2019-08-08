@@ -38,14 +38,22 @@ class Server(BaseHTTPRequestHandler):
         for url in urls:
             print(url[0])
             name = url[0].split(".")[-1]
+            dl = urlopen(url[0])
+            filename = None
             if name in ["pdf", "txt", "html"]:
-                dl = urlopen(url[0]).read()
+                filename = "attach." + name
+            elif "text/html" in dl.getheader("Content-Type"):
+                filename = "attach.html"
+            elif "text/plain" in dl.getheader("Content-Type"):
+                filename = "attach.txt"
+            data = dl.read()
+            if filename is not None:
                 with EmailSenderThingy("recurse.printer.bot@gmail.com", os.environ["PRINTER_BOT_PASSWORD"]) as server:
                     server.send_message(from_addr='recurse.printer.bot@gmail.com',
                             to_addrs=['awi29aibu5676@hpeprint.com'],
                             msg='',
                             subject='',
-                            attachments=[("attach." + name, dl)])
+                            attachments=[(filename, data)])
                 outs.append(url[0])
             else:
                 fails.append(url[0])
