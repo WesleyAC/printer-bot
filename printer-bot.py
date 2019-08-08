@@ -59,13 +59,13 @@ class Server(BaseHTTPRequestHandler):
                 fails.append(url[0])
 
     
-        out_msg = "Hi! <3\n"
+        out_msg = "Hi! <3\n\n"
         if len(outs) + len(fails) == 0:
-            out_msg += "I couldn't find any urls in your message :(\nSend me a url of a pdf, html, or text file, and I'll print it!\n"
+            out_msg += "I couldn't find any urls in your message :(\n\nSend me a url of a pdf, html, or text file, and I'll print it!\n\n"
         if len(outs) > 0:
-            out_msg += str.format("I've printed the following urls:\n{urls}\n", urls="\n".join(map(lambda x: "* " + x, outs)))
+            out_msg += str.format("I've printed the following urls:\n\n{urls}\n\n", urls="\n".join(map(lambda x: "* " + x, outs)))
         if len(fails) > 0:
-            out_msg += str.format("I couldn't print the following urls, since I don't recognize the filetype :(\n{urls}\n", urls="\n".join(map(lambda x: "* " + x, fails)))
+            out_msg += str.format("I couldn't print the following urls, since I don't recognize the filetype :(\n\n{urls}\n\n", urls="\n".join(map(lambda x: "* " + x, fails)))
         out_msg += "Have a nice day :leaves: :sparkles:"
     
         response = json.dumps({"content": out_msg}).encode()
