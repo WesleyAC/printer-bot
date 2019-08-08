@@ -48,9 +48,9 @@ class Server(BaseHTTPRequestHandler):
                 filename = "attach.txt"
             data = dl.read()
             if filename is not None:
-                with EmailSenderThingy("recurse.printer.bot@gmail.com", os.environ["PRINTER_BOT_PASSWORD"]) as server:
-                    server.send_message(from_addr='recurse.printer.bot@gmail.com',
-                            to_addrs=['awi29aibu5676@hpeprint.com'],
+                with EmailSenderThingy(os.environ["FROM_EMAIL"], os.environ["PRINTER_BOT_PASSWORD"]) as server:
+                    server.send_message(from_addr=os.environ["FROM_EMAIL"],
+                            to_addrs=[os.environ["PRINTER_EMAIL"]],
                             msg='',
                             subject='',
                             attachments=[(filename, data)])
