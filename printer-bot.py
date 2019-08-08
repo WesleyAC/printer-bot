@@ -14,16 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import re
-import os
+import json, re, os, smtplib
 from urllib.request import urlopen
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import smtplib
 
 class Server(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -66,7 +63,7 @@ class Server(BaseHTTPRequestHandler):
             out_msg += str.format("I've printed the following urls:\n\n{urls}\n\n", urls="\n".join(map(lambda x: "* " + x, outs)))
         if len(fails) > 0:
             out_msg += str.format("I couldn't print the following urls, since I don't recognize the filetype :(\n\n{urls}\n\n", urls="\n".join(map(lambda x: "* " + x, fails)))
-        out_msg += "Have a nice day :leaves: :sparkles:"
+        out_msg += "Have a nice day! :leaves: :revolving_hearts: :sparkles:"
     
         response = json.dumps({"content": out_msg}).encode()
 
@@ -79,8 +76,6 @@ class Server(BaseHTTPRequestHandler):
 
 # https://alexwlchan.net/2016/05/python-smtplib-and-fastmail/
 class EmailSenderThingy(smtplib.SMTP_SSL):
-    """A wrapper for handling SMTP connections to FastMail."""
-
     def __init__(self, username, password):
         super().__init__('smtp.gmail.com', port=465)
         self.login(username, password)
