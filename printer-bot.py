@@ -34,17 +34,21 @@ class Server(BaseHTTPRequestHandler):
         urls = re.findall(r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))""" , data["data"])
 
         outs = []
+        fails = []
         for url in urls:
             print(url[0])
-            dl = urlopen(url[0]).read()
-            name = "attach." + url[0].split(".")[-1]
-            with EmailSenderThingy("recurse.printer.bot@gmail.com", os.environ["PRINTER_BOT_PASSWORD"]) as server:
-                server.send_message(from_addr='recurse.printer.bot@gmail.com',
-                        to_addrs=['awi29aibu5676@hpeprint.com'],
-                        msg='',
-                        subject='',
-                        attachments=[(name, dl)])
-            outs.append(url[0])
+            name = url[0].split(".")[-1]
+            if name in ["pdf", "txt", "html"]:
+                dl = urlopen(url[0]).read()
+                with EmailSenderThingy("recurse.printer.bot@gmail.com", os.environ["PRINTER_BOT_PASSWORD"]) as server:
+                    server.send_message(from_addr='recurse.printer.bot@gmail.com',
+                            to_addrs=['awi29aibu5676@hpeprint.com'],
+                            msg='',
+                            subject='',
+                            attachments=[("attach." + name, dl)])
+                outs.append(url[0])
+            else:
+                fails.append(url[0])
 
         out_msg = str.format(
             """Hi! <3
@@ -53,7 +57,11 @@ I've printed the following urls:
 
 {urls}
 
-Have a nice day :leaves: :sparkles:""", urls=outs)
+I couldn't print the following urls, since I don't recognize the filetype :(
+
+{fails}
+
+Have a nice day :leaves: :sparkles:""", urls=outs, fails=fails)
     
         response = json.dumps({"content": out_msg}).encode()
 
