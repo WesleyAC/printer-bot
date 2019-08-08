@@ -50,18 +50,15 @@ class Server(BaseHTTPRequestHandler):
             else:
                 fails.append(url[0])
 
-        out_msg = str.format(
-            """Hi! <3
-
-I've printed the following urls:
-
-{urls}
-
-I couldn't print the following urls, since I don't recognize the filetype :(
-
-{fails}
-
-Have a nice day :leaves: :sparkles:""", urls=outs, fails=fails)
+    
+        out_msg = "Hi! <3\n"
+        if len(outs) + len(fails) == 0:
+            out_msg += "I couldn't find any urls in your message :(\nSend me a url of a pdf, html, or text file, and I'll print it!\n"
+        if len(outs) > 0:
+            out_msg += str.format("I've printed the following urls:\n{urls}\n", urls=map(lambda x: "* " + x, outs))
+        if len(fails) > 0:
+            out_msg += str.format("I couldn't print the following urls, since I don't recognize the filetype :(\n{urls}\n", urls=map(lambda x: "* " + x, fails))
+        out_msg += "Have a nice day :leaves: :sparkles:"
     
         response = json.dumps({"content": out_msg}).encode()
 
@@ -71,7 +68,6 @@ Have a nice day :leaves: :sparkles:""", urls=outs, fails=fails)
         self.end_headers()
         self.wfile.write(response)
         self.wfile.flush()
-        print("foo")
 
 # https://alexwlchan.net/2016/05/python-smtplib-and-fastmail/
 class EmailSenderThingy(smtplib.SMTP_SSL):
