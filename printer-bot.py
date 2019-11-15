@@ -23,6 +23,16 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 class Server(BaseHTTPRequestHandler):
+    def do_GET(self):
+        response = bytes("<3", "utf-8")
+
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Length', len(response))
+        self.end_headers()
+        self.wfile.write(response)
+        self.wfile.flush()
+
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         data = json.loads(self.rfile.read(content_length).decode())
